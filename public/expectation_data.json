@@ -1,0 +1,590 @@
+[
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 0,
+    "exp_equal": 515,
+    "exp_56": -403
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 50,
+    "exp_equal": 1130,
+    "exp_56": 237
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 100,
+    "exp_equal": 1657,
+    "exp_56": 738
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 150,
+    "exp_equal": 1631,
+    "exp_56": 720
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 200,
+    "exp_equal": 2420,
+    "exp_56": 1521
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 250,
+    "exp_equal": 3045,
+    "exp_56": 2120
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 300,
+    "exp_equal": 4425,
+    "exp_56": 3433
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 350,
+    "exp_equal": 5170,
+    "exp_56": 4205
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 400,
+    "exp_equal": 6024,
+    "exp_56": 5066
+  },
+  {
+    "situation": "朝イチ",
+    "diff_range": "-",
+    "start_g": 450,
+    "exp_equal": 7750,
+    "exp_56": 6755
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 0,
+    "exp_equal": -667,
+    "exp_56": -1600
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 50,
+    "exp_equal": 142,
+    "exp_56": -790
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 100,
+    "exp_equal": -150,
+    "exp_56": -1101
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 150,
+    "exp_equal": -535,
+    "exp_56": -1492
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 200,
+    "exp_equal": -44,
+    "exp_56": -1010
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 250,
+    "exp_equal": 345,
+    "exp_56": -623
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 300,
+    "exp_equal": 708,
+    "exp_56": -259
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 350,
+    "exp_equal": 1161,
+    "exp_56": 187
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 400,
+    "exp_equal": 1797,
+    "exp_56": 803
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 450,
+    "exp_equal": 2276,
+    "exp_56": 1298
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 500,
+    "exp_equal": 2531,
+    "exp_56": 1584
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 550,
+    "exp_equal": 3314,
+    "exp_56": 2383
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 600,
+    "exp_equal": 4408,
+    "exp_56": 3441
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 650,
+    "exp_equal": 5222,
+    "exp_56": 4268
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 700,
+    "exp_equal": 6233,
+    "exp_56": 5269
+  },
+  {
+    "situation": "通常",
+    "diff_range": "差枚不問",
+    "start_g": 750,
+    "exp_equal": 7425,
+    "exp_56": 6482
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 0,
+    "exp_equal": -1368,
+    "exp_56": -2273
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 50,
+    "exp_equal": -597,
+    "exp_56": -1499
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 100,
+    "exp_equal": -1068,
+    "exp_56": -1977
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 150,
+    "exp_equal": -1271,
+    "exp_56": -2196
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 200,
+    "exp_equal": -662,
+    "exp_56": -1593
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 250,
+    "exp_equal": -234,
+    "exp_56": -1165
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 300,
+    "exp_equal": 211,
+    "exp_56": -728
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 350,
+    "exp_equal": 790,
+    "exp_56": -167
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 400,
+    "exp_equal": 1220,
+    "exp_56": 263
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 450,
+    "exp_equal": 1821,
+    "exp_56": 867
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 500,
+    "exp_equal": 2434,
+    "exp_56": 1483
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 550,
+    "exp_equal": 3385,
+    "exp_56": 2424
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 600,
+    "exp_equal": 4349,
+    "exp_56": 3381
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 650,
+    "exp_equal": 5339,
+    "exp_56": 4367
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 700,
+    "exp_equal": 6222,
+    "exp_56": 5264
+  },
+  {
+    "situation": "通常",
+    "diff_range": "0〜200枚",
+    "start_g": 750,
+    "exp_equal": 7656,
+    "exp_56": 6694
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 0,
+    "exp_equal": -589,
+    "exp_56": -1565
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 50,
+    "exp_equal": 296,
+    "exp_56": -684
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 100,
+    "exp_equal": -83,
+    "exp_56": -1063
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 150,
+    "exp_equal": -332,
+    "exp_56": -1315
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 200,
+    "exp_equal": 136,
+    "exp_56": -841
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 250,
+    "exp_equal": 669,
+    "exp_56": -315
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 300,
+    "exp_equal": 924,
+    "exp_56": -48
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 350,
+    "exp_equal": 1373,
+    "exp_56": 391
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 400,
+    "exp_equal": 2000,
+    "exp_56": 1011
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 450,
+    "exp_equal": 2640,
+    "exp_56": 1645
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 500,
+    "exp_equal": 3243,
+    "exp_56": 2224
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 550,
+    "exp_equal": 4027,
+    "exp_56": 3014
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 600,
+    "exp_equal": 5176,
+    "exp_56": 4128
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 650,
+    "exp_equal": 6373,
+    "exp_56": 5293
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 700,
+    "exp_equal": 7255,
+    "exp_56": 6187
+  },
+  {
+    "situation": "通常",
+    "diff_range": "800〜1200枚",
+    "start_g": 750,
+    "exp_equal": 8608,
+    "exp_56": 7543
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 0,
+    "exp_equal": 654,
+    "exp_56": -395
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 50,
+    "exp_equal": 1162,
+    "exp_56": 134
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 100,
+    "exp_equal": 516,
+    "exp_56": -489
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 150,
+    "exp_equal": 102,
+    "exp_56": -870
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 200,
+    "exp_equal": 724,
+    "exp_56": -259
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 250,
+    "exp_equal": 1276,
+    "exp_56": 289
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 300,
+    "exp_equal": 1470,
+    "exp_56": 512
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 350,
+    "exp_equal": 1860,
+    "exp_56": 880
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 400,
+    "exp_equal": 2338,
+    "exp_56": 1378
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 450,
+    "exp_equal": 2757,
+    "exp_56": 1813
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 500,
+    "exp_equal": 3137,
+    "exp_56": 2128
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 550,
+    "exp_equal": 4316,
+    "exp_56": 3287
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 600,
+    "exp_equal": 5549,
+    "exp_56": 4489
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 650,
+    "exp_equal": 5741,
+    "exp_56": 4739
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 700,
+    "exp_equal": 7498,
+    "exp_56": 6400
+  },
+  {
+    "situation": "通常",
+    "diff_range": "1400〜1600枚",
+    "start_g": 750,
+    "exp_equal": 8976,
+    "exp_56": 7870
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 0,
+    "exp_equal": 244,
+    "exp_56": -686
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 50,
+    "exp_equal": 1235,
+    "exp_56": 306
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 100,
+    "exp_equal": 1232,
+    "exp_56": 314
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 150,
+    "exp_equal": 1163,
+    "exp_56": 239
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 200,
+    "exp_equal": 1959,
+    "exp_56": 1034
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 250,
+    "exp_equal": 3071,
+    "exp_56": 2119
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 300,
+    "exp_equal": 3921,
+    "exp_56": 2957
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 350,
+    "exp_equal": 4733,
+    "exp_56": 3773
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 400,
+    "exp_equal": 5601,
+    "exp_56": 4660
+  },
+  {
+    "situation": "完走後",
+    "diff_range": "-",
+    "start_g": 450,
+    "exp_equal": 6725,
+    "exp_56": 5793
+  }
+]
