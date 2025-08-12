@@ -2,135 +2,168 @@
 import React, { useEffect, useState } from 'react'
 
 type Entry = {
-  situation: string;
-  diff_range: string;
-  start_g: number;
-  exp_equal: number;
-  exp_56: number;
+  日付: string;
+  状態: string;
+  G数: number;
+  スルー回数: number;
+  セリフ種別: string;
+  セリフ内容: string;
+  舟券色: string;
+  ["5枚役回数"]: number;
+  総回転数: number;
+  ["5枚役確率"]: number;
+  判定結果: string | null;
 }
 
 export default function ExpectationChecker() {
   const [data, setData] = useState<Entry[]>([])
-  const [situation, setSituation] = useState<string>('朝イチ')
-  const [diffRange, setDiffRange] = useState<string>('-')
-  const [startG, setStartG] = useState<number>(300)
-  const [exchangeType, setExchangeType] = useState<string>('等価') // '等価' or '56枚' or 'カスタム'
-  const [customRate, setCustomRate] = useState<number>(47)
-  const [result, setResult] = useState<{ yen: number; action: string; source: Entry | null } | null>(null)
+  const [form, setForm] = useState<Entry>({
+    日付: '',
+    状態: '通常',
+    G数: 0,
+    スルー回数: 0,
+    セリフ種別: '通常時',
+    セリフ内容: '',
+    舟券色: '青',
+    ["5枚役回数"]: 0,
+    総回転数: 0,
+    ["5枚役確率"]: 0,
+    判定結果: null
+  })
+  const [result, setResult] = useState<{yen:number, action:string} | null>(null)
 
   useEffect(() => {
-    fetch('/expectation_data.json')
+    fetch('/data/expectation_data.json')
       .then(r => r.json())
       .then((json: Entry[]) => {
         setData(json)
-        if (json.length > 0) {
-          setSituation(json[0].situation)
-          setDiffRange(json[0].diff_range)
-        }
       })
       .catch(e => {
-        console.error('Failed to load expectation_data.json', e)
+        console.error('Failed to load JSON', e)
       })
   }, [])
 
-  function findBestEntry(situation: string, diffRange: string, g: number): Entry | null {
-    let candidates = data.filter(d => d.situation === situation && d.diff_range === diffRange)
-    if (candidates.length === 0) {
-      candidates = data.filter(d => d.situation === situation)
-    }
-    if (candidates.length === 0) return null
-
-    const le = candidates.filter(c => c.start_g <= g)
-    if (le.length > 0) {
-      return le.reduce((a, b) => (a.start_g > b.start_g ? a : b))
-    } else {
-      return candidates.reduce((a, b) => (a.start_g < b.start_g ? a : b))
-    }
+  // 期待値ベースを算出（ここではG数と状態をキーに簡易検索）
+  function findBaseValue(): number {
+    const candidates = data.filter(
+      d => d.状態 === form.状態
+    )
+    if (candidates.length === 0) return 0
+    const closest = candidates.reduce((a,b) =>
+      Math.abs(a.G数 - form.G数) < Math.abs(b.G数 - form.G数) ? a : b
+    )
+    return form.状態.includes('朝イチ') ? 2000 : 1000 // 仮：あとで実データに置換
   }
 
-  function computeExpected(entry: Entry | null): number {
-    if (!entry) return 0
-    if (exchangeType === '等価') return entry.exp_equal
-    if (exchangeType === '56枚') return entry.exp_56
+  // 補正ロジック
+  function applyCorrection(base: number): number {
+    let corrected = base
 
-    const equalRate = 47
-    const target = customRate || equalRate
-    if (target === 56) return entry.exp_56
-    if (target === equalRate) return entry.exp_equal
+    // 舟券色補正
+    const colorBonus: Record<string, number> = {
+      "青": 0,
+      "黄": 500,
+      "銀": 1000,
+      "金": 2000,
+      "虹": 3000
+    }
+    corrected += colorBonus[form.舟券色] || 0
 
-    const t = (target - equalRate) / (56 - equalRate)
-    return Math.round(entry.exp_equal + t * (entry.exp_56 - entry.exp_equal))
+    // セリフ補正例（モードB示唆以上で+500円）
+    if (form.セリフ内容.includes('波多野感じ')) corrected += 500
+    if (form.セリフ内容.includes('百年早え')) corrected += 1000
+
+    // 5枚役確率補正（設定6付近で+1500円）
+    const probability = form.総回転数 > 0
+      ? form["5枚役回数"] / form.総回転数
+      : 0
+    const setting6Prob = 1 / 22.53
+    if (probability >= setting6Prob * 0.95) corrected += 1500
+
+    return corrected
   }
 
   function onCheck() {
-    const entry = findBestEntry(situation, diffRange, startG)
-    const yen = computeExpected(entry)
+    const base = findBaseValue()
+    const yen = applyCorrection(base)
     const action = yen > 0 ? '続行' : 'ヤメ'
-    setResult({ yen, action, source: entry })
+    setResult({ yen, action })
   }
 
-  const situations = Array.from(new Set(data.map(d => d.situation)))
-  const diffRanges = Array.from(new Set(data.filter(d => d.situation === situation).map(d => d.diff_range)))
-
   return (
-    <div style={{ padding: 16, fontFamily: 'sans-serif', maxWidth: 480, margin: '0 auto' }}>
-      <h2>期待値判定（実践データ参照）</h2>
+    <div style={{ padding: 16, maxWidth: 480, margin: '0 auto' }}>
+      <h2>期待値判定（拡張版）</h2>
 
-      <div style={{ marginBottom: 8 }}>
-        <label>状況:</label><br />
-        <select value={situation} onChange={e => { setSituation(e.target.value); setDiffRange('-'); }}>
-          {situations.map(s => <option key={s} value={s}>{s}</option>)}
+      {/* 状態 */}
+      <div>
+        <label>状態:</label><br/>
+        <select value={form.状態} onChange={e => setForm({ ...form, 状態: e.target.value })}>
+          <option value="通常">通常</option>
+          <option value="朝イチ">朝イチ</option>
+          <option value="激走チャージ">激走チャージ</option>
+          <option value="完走後">完走後</option>
+          <option value="非完走後">非完走後</option>
+          <option value="引継ぎ">引継ぎ</option>
         </select>
       </div>
 
-      <div style={{ marginBottom: 8 }}>
-        <label>差枚範囲（該当する場合）:</label><br />
-        <select value={diffRange} onChange={e => setDiffRange(e.target.value)}>
-          <option value="-">-</option>
-          {diffRanges.map(dr => <option key={dr} value={dr}>{dr}</option>)}
+      {/* G数 */}
+      <div>
+        <label>開始G:</label><br/>
+        <input type="number" value={form.G数} onChange={e => setForm({ ...form, G数: Number(e.target.value) })} />
+      </div>
+
+      {/* スルー回数 */}
+      <div>
+        <label>スルー回数:</label><br/>
+        <input type="number" value={form.スルー回数} onChange={e => setForm({ ...form, スルー回数: Number(e.target.value) })} />
+      </div>
+
+      {/* セリフ */}
+      <div>
+        <label>セリフ種別:</label><br/>
+        <select value={form.セリフ種別} onChange={e => setForm({ ...form, セリフ種別: e.target.value })}>
+          <option value="通常時">通常時</option>
+          <option value="激走">激走</option>
+        </select>
+        <input type="text" placeholder="セリフ内容" value={form.セリフ内容}
+          onChange={e => setForm({ ...form, セリフ内容: e.target.value })} />
+      </div>
+
+      {/* 舟券色 */}
+      <div>
+        <label>舟券色:</label><br/>
+        <select value={form.舟券色} onChange={e => setForm({ ...form, 舟券色: e.target.value })}>
+          <option value="青">青</option>
+          <option value="黄">黄</option>
+          <option value="銀">銀</option>
+          <option value="金">金</option>
+          <option value="虹">虹</option>
         </select>
       </div>
 
-      <div style={{ marginBottom: 8 }}>
-        <label>開始G:</label><br />
-        <input type="number" value={startG} onChange={e => setStartG(Number(e.target.value))} />
+      {/* 5枚役 */}
+      <div>
+        <label>5枚役回数:</label><br/>
+        <input type="number" value={form["5枚役回数"]} onChange={e => setForm({ ...form, ["5枚役回数"]: Number(e.target.value) })} />
       </div>
 
-      <div style={{ marginBottom: 8 }}>
-        <label>交換率:</label><br />
-        <select value={exchangeType} onChange={e => setExchangeType(e.target.value)}>
-          <option value="等価">等価</option>
-          <option value="56枚">56枚</option>
-          <option value="カスタム">カスタム(枚)</option>
-        </select>
-        {exchangeType === 'カスタム' && (
-          <div style={{ marginTop: 6 }}>
-            <input type="number" value={customRate} onChange={e => setCustomRate(Number(e.target.value))} /> 枚
-            <div style={{ fontSize: 12, color: '#666' }}>注: カスタムは等価(47枚)と56枚の線形補間で推定します。</div>
-          </div>
-        )}
+      {/* 総回転数 */}
+      <div>
+        <label>総回転数:</label><br/>
+        <input type="number" value={form.総回転数} onChange={e => setForm({ ...form, 総回転数: Number(e.target.value) })} />
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <button onClick={onCheck} style={{ padding: '8px 12px' }}>判定する</button>
+        <button onClick={onCheck}>判定する</button>
       </div>
 
       {result && (
         <div style={{ marginTop: 16, padding: 12, borderRadius: 6, background: result.yen > 0 ? '#e6ffed' : '#ffe6e6' }}>
           <div><strong>期待値 (約)</strong>: {result.yen >= 0 ? '＋' : ''}{result.yen} 円</div>
           <div><strong>判定</strong>: <span style={{ color: result.yen > 0 ? 'green' : 'red' }}>{result.action}</span></div>
-          <div style={{ fontSize: 12, color: '#444', marginTop: 8 }}>
-            {result.source
-              ? `参照: 状況=${result.source.situation} / 差枚=${result.source.diff_range} / 開始G=${result.source.start_g}`
-              : '該当データなし（状況を調整してください）'}
-          </div>
         </div>
       )}
-
-      <div style={{ marginTop: 12, fontSize: 12, color: '#666' }}>
-        <div>補足: 開始Gがテーブルの刻みに一致しない場合、入力G以下で最も近い行を使用します（該当なしは最小の行を使用）。</div>
-        <div>補正が必要な場合はセリフや周期も将来的に加味します。</div>
-      </div>
     </div>
   )
 }
