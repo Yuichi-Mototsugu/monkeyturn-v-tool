@@ -16,17 +16,15 @@ export default function ExpectationChecker() {
   const [startG, setStartG] = useState<number>(300)
   const [exchangeType, setExchangeType] = useState<string>('等価') // '等価' or '56枚' or 'カスタム'
   const [customRate, setCustomRate] = useState<number>(47)
-  const [result, setResult] = useState<{yen:number, action:string, source: Entry | null} | null>(null)
+  const [result, setResult] = useState<{ yen: number; action: string; source: Entry | null } | null>(null)
 
   useEffect(() => {
     fetch('/expectation_data.json')
       .then(r => r.json())
       .then((json: Entry[]) => {
         setData(json)
-        // initialize options
         if (json.length > 0) {
-          const s = json[0].situation
-          setSituation(s)
+          setSituation(json[0].situation)
           setDiffRange(json[0].diff_range)
         }
       })
@@ -36,22 +34,17 @@ export default function ExpectationChecker() {
   }, [])
 
   function findBestEntry(situation: string, diffRange: string, g: number): Entry | null {
-    // Try exact match of situation and diffRange
     let candidates = data.filter(d => d.situation === situation && d.diff_range === diffRange)
-    // fallback: situation with any diffRange
     if (candidates.length === 0) {
       candidates = data.filter(d => d.situation === situation)
     }
     if (candidates.length === 0) return null
-    // choose entry with start_g <= g as large as possible; if none, choose smallest start_g
+
     const le = candidates.filter(c => c.start_g <= g)
     if (le.length > 0) {
-      let best = le.reduce((a,b) => (a.start_g > b.start_g ? a : b))
-      return best
+      return le.reduce((a, b) => (a.start_g > b.start_g ? a : b))
     } else {
-      // choose smallest start_g (earliest)
-      let best = candidates.reduce((a,b) => (a.start_g < b.start_g ? a : b))
-      return best
+      return candidates.reduce((a, b) => (a.start_g < b.start_g ? a : b))
     }
   }
 
@@ -59,15 +52,14 @@ export default function ExpectationChecker() {
     if (!entry) return 0
     if (exchangeType === '等価') return entry.exp_equal
     if (exchangeType === '56枚') return entry.exp_56
-    // custom interpolation assumption: '等価' corresponds to 47枚
+
     const equalRate = 47
     const target = customRate || equalRate
     if (target === 56) return entry.exp_56
     if (target === equalRate) return entry.exp_equal
-    // linear interpolation between equalRate and 56
+
     const t = (target - equalRate) / (56 - equalRate)
-    const val = Math.round(entry.exp_equal + t * (entry.exp_56 - entry.exp_equal))
-    return val
+    return Math.round(entry.exp_equal + t * (entry.exp_56 - entry.exp_equal))
   }
 
   function onCheck() {
@@ -77,22 +69,22 @@ export default function ExpectationChecker() {
     setResult({ yen, action, source: entry })
   }
 
-  // build unique options for selects
   const situations = Array.from(new Set(data.map(d => d.situation)))
   const diffRanges = Array.from(new Set(data.filter(d => d.situation === situation).map(d => d.diff_range)))
 
   return (
     <div style={{ padding: 16, fontFamily: 'sans-serif', maxWidth: 480, margin: '0 auto' }}>
       <h2>期待値判定（実践データ参照）</h2>
+
       <div style={{ marginBottom: 8 }}>
-        <label>状況:</label><br/>
+        <label>状況:</label><br />
         <select value={situation} onChange={e => { setSituation(e.target.value); setDiffRange('-'); }}>
           {situations.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
 
       <div style={{ marginBottom: 8 }}>
-        <label>差枚範囲（該当する場合）:</label><br/>
+        <label>差枚範囲（該当する場合）:</label><br />
         <select value={diffRange} onChange={e => setDiffRange(e.target.value)}>
           <option value="-">-</option>
           {diffRanges.map(dr => <option key={dr} value={dr}>{dr}</option>)}
@@ -100,12 +92,12 @@ export default function ExpectationChecker() {
       </div>
 
       <div style={{ marginBottom: 8 }}>
-        <label>開始G:</label><br/>
+        <label>開始G:</label><br />
         <input type="number" value={startG} onChange={e => setStartG(Number(e.target.value))} />
       </div>
 
       <div style={{ marginBottom: 8 }}>
-        <label>交換率:</label><br/>
+        <label>交換率:</label><br />
         <select value={exchangeType} onChange={e => setExchangeType(e.target.value)}>
           <option value="等価">等価</option>
           <option value="56枚">56枚</option>
@@ -128,7 +120,9 @@ export default function ExpectationChecker() {
           <div><strong>期待値 (約)</strong>: {result.yen >= 0 ? '＋' : ''}{result.yen} 円</div>
           <div><strong>判定</strong>: <span style={{ color: result.yen > 0 ? 'green' : 'red' }}>{result.action}</span></div>
           <div style={{ fontSize: 12, color: '#444', marginTop: 8 }}>
-            {result.source ? `参照: 状況=${result.source.situation} / 差枚=${result.source.diff_range} / 開始G=${result.source.start_g}` : '該当データなし（状況を調整してください）'}
+            {result.source
+              ? `参照: 状況=${result.source.situation} / 差枚=${result.source.diff_range} / 開始G=${result.source.start_g}`
+              : '該当データなし（状況を調整してください）'}
           </div>
         </div>
       )}
