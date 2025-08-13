@@ -15,8 +15,15 @@ type Entry = {
   判定結果: string | null;
 }
 
+type Serifu = {
+  type: string;   // セリフ種別
+  text: string;   // セリフ内容
+  note: string;   // 示唆内容
+}
+
 export default function ExpectationChecker() {
   const [data, setData] = useState<Entry[]>([])
+  const [serifuList, setSerifuList] = useState<Serifu[]>([])
   const [form, setForm] = useState<Entry>({
     日付: '',
     状態: '通常',
@@ -33,13 +40,24 @@ export default function ExpectationChecker() {
   const [result, setResult] = useState<{yen:number, action:string} | null>(null)
 
   useEffect(() => {
+    // 期待値データ読み込み
     fetch('/data/expectation_data.json')
       .then(r => r.json())
       .then((json: Entry[]) => {
         setData(json)
       })
       .catch(e => {
-        console.error('Failed to load JSON', e)
+        console.error('Failed to load expectation_data.json', e)
+      })
+
+    // セリフリスト読み込み
+    fetch('/data/serifu_list.json')
+      .then(r => r.json())
+      .then((json: Serifu[]) => {
+        setSerifuList(json)
+      })
+      .catch(e => {
+        console.error('Failed to load serifu_list.json', e)
       })
   }, [])
 
@@ -126,8 +144,22 @@ export default function ExpectationChecker() {
           <option value="通常時">通常時</option>
           <option value="激走">激走</option>
         </select>
-        <input type="text" placeholder="セリフ内容" value={form.セリフ内容}
-          onChange={e => setForm({ ...form, セリフ内容: e.target.value })} />
+      </div>
+      <div>
+        <label>セリフ内容:</label><br/>
+        <select
+          value={form.セリフ内容}
+          onChange={e => setForm({ ...form, セリフ内容: e.target.value })}
+        >
+          <option value="">-</option>
+          {serifuList
+            .filter(s => s.type === form.セリフ種別)
+            .map((s, idx) => (
+              <option key={idx} value={s.text}>
+                {`${s.text}（${s.note}）`}
+              </option>
+            ))}
+        </select>
       </div>
 
       {/* 舟券色 */}
