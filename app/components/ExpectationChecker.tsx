@@ -9,6 +9,8 @@ type Entry = {
   セリフ種別: string;
   セリフ内容: string;
   舟券色: string;
+  予想屋: string;
+  AT終了画面: string;
   ["5枚役回数"]: number;
   総回転数: number;
   ["5枚役確率"]: number;
@@ -32,6 +34,8 @@ export default function ExpectationChecker() {
     セリフ種別: '通常時',
     セリフ内容: '',
     舟券色: '青',
+    予想屋: '',
+    AT終了画面: '',
     ["5枚役回数"]: 0,
     総回転数: 0,
     ["5枚役確率"]: 0,
@@ -61,7 +65,7 @@ export default function ExpectationChecker() {
       })
   }, [])
 
-  // 期待値ベースを算出（ここではG数と状態をキーに簡易検索）
+  // 期待値ベースを算出
   function findBaseValue(): number {
     const candidates = data.filter(
       d => d.状態 === form.状態
@@ -70,7 +74,7 @@ export default function ExpectationChecker() {
     const closest = candidates.reduce((a,b) =>
       Math.abs(a.G数 - form.G数) < Math.abs(b.G数 - form.G数) ? a : b
     )
-    return form.状態.includes('朝イチ') ? 2000 : 1000 // 仮：あとで実データに置換
+    return form.状態.includes('朝イチ') ? 2000 : 1000 // 仮
   }
 
   // 補正ロジック
@@ -87,11 +91,30 @@ export default function ExpectationChecker() {
     }
     corrected += colorBonus[form.舟券色] || 0
 
-    // セリフ補正例（モードB示唆以上で+500円）
+    // 予想屋補正
+    const yosoyaBonus: Record<string, number> = {
+      "6周期天井否定": 200,
+      "1or3or5周期天井": 300,
+      "1or2or4周期天井": 300,
+      "2周期以内AT濃厚": 1500,
+      "当該周期AT濃厚": 2000
+    }
+    corrected += yosoyaBonus[form.予想屋] || 0
+
+    // AT終了画面補正
+    const helmetBonus: Record<string, number> = {
+      "デフォルト": 0,
+      "通常B示唆": 500,
+      "通常B or 天国濃厚": 1000,
+      "天国濃厚": 2000
+    }
+    corrected += helmetBonus[form.AT終了画面] || 0
+
+    // セリフ補正例
     if (form.セリフ内容.includes('波多野感じ')) corrected += 500
     if (form.セリフ内容.includes('百年早え')) corrected += 1000
 
-    // 5枚役確率補正（設定6付近で+1500円）
+    // 5枚役確率補正
     const probability = form.総回転数 > 0
       ? form["5枚役回数"] / form.総回転数
       : 0
@@ -171,6 +194,31 @@ export default function ExpectationChecker() {
           <option value="銀">銀</option>
           <option value="金">金</option>
           <option value="虹">虹</option>
+        </select>
+      </div>
+
+      {/* 予想屋 */}
+      <div>
+        <label>予想屋:</label><br/>
+        <select value={form.予想屋} onChange={e => setForm({ ...form, 予想屋: e.target.value })}>
+          <option value="">-</option>
+          <option value="6周期天井否定">6周期天井否定</option>
+          <option value="1or3or5周期天井">1or3or5周期天井</option>
+          <option value="1or2or4周期天井">1or2or4周期天井</option>
+          <option value="2周期以内AT濃厚">2周期以内AT濃厚</option>
+          <option value="当該周期AT濃厚">当該周期AT濃厚</option>
+        </select>
+      </div>
+
+      {/* AT終了画面 */}
+      <div>
+        <label>AT終了画面:</label><br/>
+        <select value={form.AT終了画面} onChange={e => setForm({ ...form, AT終了画面: e.target.value })}>
+          <option value="">-</option>
+          <option value="デフォルト">デフォルト</option>
+          <option value="通常B示唆">通常B示唆</option>
+          <option value="通常B or 天国濃厚">通常B or 天国濃厚</option>
+          <option value="天国濃厚">天国濃厚</option>
         </select>
       </div>
 
