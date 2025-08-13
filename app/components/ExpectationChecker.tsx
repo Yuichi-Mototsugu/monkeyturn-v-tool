@@ -107,6 +107,10 @@ export default function ExpectationChecker() {
     setResult({ yen, action })
   }
 
+  // 選択中のセリフの note
+  const selectedSerifuNote =
+    serifuList.find(s => s.text === form.セリフ内容 && s.type === form.セリフ種別)?.note
+
   return (
     <div style={{ padding: 16, maxWidth: 480, margin: '0 auto' }}>
       <h2>期待値判定（拡張版）</h2>
@@ -139,11 +143,17 @@ export default function ExpectationChecker() {
       {/* セリフ */}
       <div>
         <label>セリフ種別:</label><br />
-        <select value={form.セリフ種別} onChange={e => setForm({ ...form, セリフ種別: e.target.value })}>
+        <select
+          value={form.セリフ種別}
+          onChange={e =>
+            setForm({ ...form, セリフ種別: e.target.value, セリフ内容: '' })
+          }
+        >
           <option value="通常時">通常時</option>
           <option value="激走">激走</option>
         </select>
       </div>
+
       <div>
         <label>セリフ内容:</label><br />
         <select
@@ -157,9 +167,9 @@ export default function ExpectationChecker() {
               <option key={idx} value={s.text}>{s.text}</option>
             ))}
         </select>
-        {form.セリフ内容 && (
+        {form.セリフ内容 && selectedSerifuNote && (
           <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
-            {serifuList.find(s => s.text === form.セリフ内容)?.note}
+            {selectedSerifuNote}
           </div>
         )}
       </div>
