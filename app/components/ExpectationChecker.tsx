@@ -17,15 +17,35 @@ type Entry = {
   判定結果: string | null;
 }
 
-type Serifu = {
-  type: string;   // セリフ種別
-  text: string;   // セリフ内容
-  note: string;   // 示唆内容
-}
+type Serifu = { type: string; text: string; note: string }
 
 export default function ExpectationChecker() {
   const [data, setData] = useState<Entry[]>([])
   const [serifuList, setSerifuList] = useState<Serifu[]>([])
+
+  const funakenList = [
+    { value: "青", note: "最上段選手のライバルモード（弱）示唆" },
+    { value: "黄", note: "最上段選手のライバルモード（強）示唆" },
+    { value: "銀", note: "設定2 or 4 or 6濃厚示唆" },
+    { value: "金", note: "設定4以上濃厚示唆" },
+    { value: "虹", note: "設定6濃厚示唆" }
+  ]
+
+  const yosouyaList = [
+    { value: "予想①（青）", note: "6周期天井否定示唆" },
+    { value: "予想②（青）", note: "1 or 3 or 5周期天井示唆" },
+    { value: "予想（緑）", note: "1 or 2 or 4周期天井示唆" },
+    { value: "特報①（赤）", note: "出現から2周期以内にAT濃厚示唆" },
+    { value: "特報②（紫）", note: "当該周期でのAT濃厚示唆" }
+  ]
+
+  const helmetList = [
+    { value: "ロゴなし", note: "デフォルト" },
+    { value: "ロゴ有り", note: "通常B示唆" },
+    { value: "ロゴ有り+キラキラ", note: "通常B or 天国濃厚示唆" },
+    { value: "ロゴ有り+V", note: "天国濃厚示唆" }
+  ]
+
   const [form, setForm] = useState<Entry>({
     日付: '',
     状態: '通常',
@@ -41,86 +61,42 @@ export default function ExpectationChecker() {
     ["5枚役確率"]: 0,
     判定結果: null
   })
-  const [result, setResult] = useState<{yen:number, action:string} | null>(null)
+  const [result, setResult] = useState<{ yen: number, action: string } | null>(null)
 
   useEffect(() => {
-    // 期待値データ読み込み
     fetch('/data/expectation_data.json')
       .then(r => r.json())
-      .then((json: Entry[]) => {
-        setData(json)
-      })
-      .catch(e => {
-        console.error('Failed to load expectation_data.json', e)
-      })
+      .then((json: Entry[]) => setData(json))
+      .catch(e => console.error('Failed to load expectation_data.json', e))
 
-    // セリフリスト読み込み
     fetch('/data/serifu_list.json')
       .then(r => r.json())
-      .then((json: Serifu[]) => {
-        setSerifuList(json)
-      })
-      .catch(e => {
-        console.error('Failed to load serifu_list.json', e)
-      })
+      .then((json: Serifu[]) => setSerifuList(json))
+      .catch(e => console.error('Failed to load serifu_list.json', e))
   }, [])
 
-  // 期待値ベースを算出
   function findBaseValue(): number {
-    const candidates = data.filter(
-      d => d.状態 === form.状態
-    )
+    const candidates = data.filter(d => d.状態 === form.状態)
     if (candidates.length === 0) return 0
-    const closest = candidates.reduce((a,b) =>
+    candidates.reduce((a, b) =>
       Math.abs(a.G数 - form.G数) < Math.abs(b.G数 - form.G数) ? a : b
     )
-    return form.状態.includes('朝イチ') ? 2000 : 1000 // 仮
+    return form.状態.includes('朝イチ') ? 2000 : 1000
   }
 
-  // 補正ロジック
   function applyCorrection(base: number): number {
     let corrected = base
-
-    // 舟券色補正
     const colorBonus: Record<string, number> = {
-      "青": 0,
-      "黄": 500,
-      "銀": 1000,
-      "金": 2000,
-      "虹": 3000
+      "青": 0, "黄": 500, "銀": 1000, "金": 2000, "虹": 3000
     }
     corrected += colorBonus[form.舟券色] || 0
-
-    // 予想屋補正
-    const yosoyaBonus: Record<string, number> = {
-      "6周期天井否定": 200,
-      "1or3or5周期天井": 300,
-      "1or2or4周期天井": 300,
-      "2周期以内AT濃厚": 1500,
-      "当該周期AT濃厚": 2000
-    }
-    corrected += yosoyaBonus[form.予想屋] || 0
-
-    // AT終了画面補正
-    const helmetBonus: Record<string, number> = {
-      "デフォルト": 0,
-      "通常B示唆": 500,
-      "通常B or 天国濃厚": 1000,
-      "天国濃厚": 2000
-    }
-    corrected += helmetBonus[form.AT終了画面] || 0
-
-    // セリフ補正例
     if (form.セリフ内容.includes('波多野感じ')) corrected += 500
     if (form.セリフ内容.includes('百年早え')) corrected += 1000
-
-    // 5枚役確率補正
     const probability = form.総回転数 > 0
       ? form["5枚役回数"] / form.総回転数
       : 0
     const setting6Prob = 1 / 22.53
     if (probability >= setting6Prob * 0.95) corrected += 1500
-
     return corrected
   }
 
@@ -137,7 +113,7 @@ export default function ExpectationChecker() {
 
       {/* 状態 */}
       <div>
-        <label>状態:</label><br/>
+        <label>状態:</label><br />
         <select value={form.状態} onChange={e => setForm({ ...form, 状態: e.target.value })}>
           <option value="通常">通常</option>
           <option value="朝イチ">朝イチ</option>
@@ -150,26 +126,26 @@ export default function ExpectationChecker() {
 
       {/* G数 */}
       <div>
-        <label>開始G:</label><br/>
+        <label>開始G:</label><br />
         <input type="number" value={form.G数} onChange={e => setForm({ ...form, G数: Number(e.target.value) })} />
       </div>
 
       {/* スルー回数 */}
       <div>
-        <label>スルー回数:</label><br/>
+        <label>スルー回数:</label><br />
         <input type="number" value={form.スルー回数} onChange={e => setForm({ ...form, スルー回数: Number(e.target.value) })} />
       </div>
 
       {/* セリフ */}
       <div>
-        <label>セリフ種別:</label><br/>
+        <label>セリフ種別:</label><br />
         <select value={form.セリフ種別} onChange={e => setForm({ ...form, セリフ種別: e.target.value })}>
           <option value="通常時">通常時</option>
           <option value="激走">激走</option>
         </select>
       </div>
       <div>
-        <label>セリフ内容:</label><br/>
+        <label>セリフ内容:</label><br />
         <select
           value={form.セリフ内容}
           onChange={e => setForm({ ...form, セリフ内容: e.target.value })}
@@ -178,59 +154,72 @@ export default function ExpectationChecker() {
           {serifuList
             .filter(s => s.type === form.セリフ種別)
             .map((s, idx) => (
-              <option key={idx} value={s.text}>
-                {`${s.text}（${s.note}）`}
-              </option>
+              <option key={idx} value={s.text}>{s.text}</option>
             ))}
         </select>
+        {form.セリフ内容 && (
+          <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
+            {serifuList.find(s => s.text === form.セリフ内容)?.note}
+          </div>
+        )}
       </div>
 
       {/* 舟券色 */}
       <div>
-        <label>舟券色:</label><br/>
+        <label>舟券色:</label><br />
         <select value={form.舟券色} onChange={e => setForm({ ...form, 舟券色: e.target.value })}>
-          <option value="青">青</option>
-          <option value="黄">黄</option>
-          <option value="銀">銀</option>
-          <option value="金">金</option>
-          <option value="虹">虹</option>
+          {funakenList.map((f, idx) => (
+            <option key={idx} value={f.value}>{f.value}</option>
+          ))}
         </select>
+        {form.舟券色 && (
+          <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
+            {funakenList.find(f => f.value === form.舟券色)?.note}
+          </div>
+        )}
       </div>
 
       {/* 予想屋 */}
       <div>
-        <label>予想屋:</label><br/>
+        <label>予想屋:</label><br />
         <select value={form.予想屋} onChange={e => setForm({ ...form, 予想屋: e.target.value })}>
           <option value="">-</option>
-          <option value="6周期天井否定">6周期天井否定</option>
-          <option value="1or3or5周期天井">1or3or5周期天井</option>
-          <option value="1or2or4周期天井">1or2or4周期天井</option>
-          <option value="2周期以内AT濃厚">2周期以内AT濃厚</option>
-          <option value="当該周期AT濃厚">当該周期AT濃厚</option>
+          {yosouyaList.map((y, idx) => (
+            <option key={idx} value={y.value}>{y.value}</option>
+          ))}
         </select>
+        {form.予想屋 && (
+          <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
+            {yosouyaList.find(y => y.value === form.予想屋)?.note}
+          </div>
+        )}
       </div>
 
       {/* AT終了画面 */}
       <div>
-        <label>AT終了画面:</label><br/>
+        <label>AT終了画面:</label><br />
         <select value={form.AT終了画面} onChange={e => setForm({ ...form, AT終了画面: e.target.value })}>
           <option value="">-</option>
-          <option value="デフォルト">デフォルト</option>
-          <option value="通常B示唆">通常B示唆</option>
-          <option value="通常B or 天国濃厚">通常B or 天国濃厚</option>
-          <option value="天国濃厚">天国濃厚</option>
+          {helmetList.map((h, idx) => (
+            <option key={idx} value={h.value}>{h.value}</option>
+          ))}
         </select>
+        {form.AT終了画面 && (
+          <div style={{ fontSize: '0.9em', color: '#555', marginTop: 4 }}>
+            {helmetList.find(h => h.value === form.AT終了画面)?.note}
+          </div>
+        )}
       </div>
 
       {/* 5枚役 */}
       <div>
-        <label>5枚役回数:</label><br/>
+        <label>5枚役回数:</label><br />
         <input type="number" value={form["5枚役回数"]} onChange={e => setForm({ ...form, ["5枚役回数"]: Number(e.target.value) })} />
       </div>
 
       {/* 総回転数 */}
       <div>
-        <label>総回転数:</label><br/>
+        <label>総回転数:</label><br />
         <input type="number" value={form.総回転数} onChange={e => setForm({ ...form, 総回転数: Number(e.target.value) })} />
       </div>
 
